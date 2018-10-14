@@ -188,7 +188,7 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
             bottom: 49.0,
             left: MediaQuery.of(context).size.width / 4,
             child: Container(
-              width: MediaQuery.of(context).size.width /2,
+              width: MediaQuery.of(context).size.width / 2,
               height: 42.0,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(21.0),
@@ -203,7 +203,7 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                         .copyWith(color: Colors.white),
                   ),
                 ),
-                onTap: (){
+                onTap: () {
                   print('tapped');
                   _showDialog();
                 },
@@ -229,8 +229,8 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                width: _screenWidth * 0.7,
-                height: _screenHeight * 0.11,
+                width: _screenWidth * 0.5,
+                height: _screenHeight * 0.1,
                 child: Container(
                   child: Container(
                       margin: EdgeInsets.only(
@@ -240,35 +240,39 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            width: _screenWidth * 0.45,
-                            child: Text(
-                              _place.name,
-                              maxLines: 1,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0),
-                            ),
-                          ),
-//                          Container(
-//                            width: _screenWidth * 0.45,
-//                            child: Text(_place.,
-//                              style: TextStyle(
-//                                  color: Colors.black,
-//                                  fontWeight: FontWeight.w300,
-//                                  fontSize: 13.0
-//                              ),
-//                            ),
-//                          ),
-                          Text(
-                            _place.rating.toString(),
-                            style: TextStyle(
-                                color: _place.rating >= 2.5
-                                    ? Colors.green.withAlpha(180)
-                                    : Colors.red.withAlpha(180),
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14.0),
-                          )
+//                              width: _screenWidth * 0.35,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        _place.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.0),
+                                      ),
+                                      Text(
+                                        _place.rating.toString(),
+                                        style: TextStyle(
+                                            color: _place.rating >= 2.5
+                                                ? Colors.green
+                                                : Colors.red,
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 14.0),
+                                      )
+                                    ],
+                                  ),
+                                  Text(
+                                    _place.discount.toString() + "%",
+                                    style: Theme.of(context).textTheme.headline.copyWith(color: Colors.deepPurple),
+                                  )
+                                ],
+                              )),
                         ],
                       )),
                 ),
@@ -317,14 +321,15 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
     );
   }
 
-  _showDialog(){
+  _showDialog() {
     Size size = MediaQuery.of(context).size;
-    return showDialog(context: context, builder:(ctx)=>Container(
-        width: size.width * .8,
-        height: size.height * .6,
-        child: ModalScreen()) );
+    return showDialog(
+        context: context,
+        builder: (ctx) => Container(
+            width: size.width * .8,
+            height: size.height * .6,
+            child: ModalScreen()));
   }
-
 
   _openDetails(Object coWorking) {
 //    SharedPreferences.getInstance().then((sp){

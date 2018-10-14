@@ -5,8 +5,9 @@ class Place{
   LatLng coordinate;
   String type;
   double rating;
+  int discount;
 
-  Place(this.name, this.coordinate, this.type, this.rating);
+  Place(this.name, this.coordinate, this.type, this.rating, this.discount);
 
 
 }

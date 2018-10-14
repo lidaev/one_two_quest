@@ -8,15 +8,11 @@ class ListPromo extends StatelessWidget {
         child: Column(
       children: <Widget>[
         Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.deepPurple, width: 1.0)
-            ),
           child: ListView(
             shrinkWrap: true,
             children: _buildTickets(context),
           ),
         ),
-
       ],
     ));
   }
@@ -48,10 +44,12 @@ class ListPromo extends StatelessWidget {
   }
 
   List<Widget> _getInUseTickets(BuildContext c){
-    return List<Widget>.generate(5, (ind){
-      return _getListItem(
-              "Наше место", "Использован $ind раз", "${ind * 3}%", c);
-    });
+    List<Widget> tickets = [];
+    tickets.add(_getListItem('Окинава' , 'Был использован 4 раза', '10%', c));
+    tickets.add(_getListItem('Нефть' , 'Был использован 7 раз', '5%',c));
+
+
+    return tickets;
 
   }
   Widget _getListItem(
