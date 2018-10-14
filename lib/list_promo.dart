@@ -4,8 +4,33 @@ class ListPromo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: 15.0),
         child: Column(
       children: <Widget>[
+        Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          height: MediaQuery.of(context).size.height * 0.25,
+          padding: EdgeInsets.symmetric(vertical: 15.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepPurple, width: 1.0)
+            ),
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5.0),
+                child: Text("НАШЕ МЕСТО", style: Theme.of(context).textTheme.headline),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5.0),
+                child: Text("10%", style: Theme.of(context).textTheme.display2.copyWith(color: Colors.deepPurple)),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5.0),
+                child: Text("098-TY-UOIT", style: Theme.of(context).textTheme.body1),
+              )
+            ],
+          ),
+        ),
         ListView.builder(
             shrinkWrap: true,
             itemCount: 5,
