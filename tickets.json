@@ -1,0 +1,16 @@
+{
+  "tickets": [
+    {
+      "name": "Окинава",
+      "discount": "10%",
+      "Rating": "4.5",
+      "useCount": "4"
+    },
+    {
+      "name": "Нефть",
+      "type": "5%",
+      "Rating": "4.6",
+      "useCount": "2"
+    }
+  ]
+}
