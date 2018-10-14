@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:latlong/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:one_two_quest/modal.dart';
 import 'package:one_two_quest/place.dart';
 
 class PlaceMapScreen extends StatefulWidget {
@@ -182,7 +183,7 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                           },
                         )),
                   ])),
-          _getCoWorkingCard(),
+          _buildPlaceCard(),
           Positioned(
             bottom: 49.0,
             left: MediaQuery.of(context).size.width / 4,
@@ -202,7 +203,10 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                         .copyWith(color: Colors.white),
                   ),
                 ),
-                onTap: (){},
+                onTap: (){
+                  print('tapped');
+                  _showDialog();
+                },
               ),
             ),
           )
@@ -211,7 +215,7 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
     );
   }
 
-  Widget _getCoWorkingCard() {
+  Widget _buildPlaceCard() {
     if (_cardShowing) {
       return GestureDetector(
           onTap: () {
@@ -312,6 +316,15 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
       child: Text(message),
     );
   }
+
+  _showDialog(){
+    Size size = MediaQuery.of(context).size;
+    return showDialog(context: context, builder:(ctx)=>Container(
+        width: size.width * .8,
+        height: size.height * .6,
+        child: ModalScreen()) );
+  }
+
 
   _openDetails(Object coWorking) {
 //    SharedPreferences.getInstance().then((sp){
