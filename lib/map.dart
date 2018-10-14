@@ -1,14 +1,15 @@
 import 'dart:async';
 
-
 import 'package:latlong/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:one_two_quest/place.dart';
 
 class PlaceMapScreen extends StatefulWidget {
-  final List<Object> _coworkings;
+  final List<Place> _places;
 
-  PlaceMapScreen(this._coworkings){}
+  PlaceMapScreen(this._places);
+
 //    _coworkings = (coworkings ?? []).where((cw)=> cw.lat != null && cw.lng != null).();
 
   @override
@@ -16,28 +17,27 @@ class PlaceMapScreen extends StatefulWidget {
 }
 
 class _PlaceMapScreenState extends State<PlaceMapScreen> {
-
-  static const String _mapBoxUrl = "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}";
-  static const String _mapBoxToken = "pk.eyJ1Ijoidm92YW4xMjMiLCJhIjoiY2o3aXNicTFhMW9jbDJxbWw3bHNqMW92MCJ9.N1hCLnBrJjdX0JmYuA8bOw";
+  static const String _mapBoxUrl =
+      "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}";
+  static const String _mapBoxToken =
+      "pk.eyJ1Ijoidm92YW4xMjMiLCJhIjoiY2o3aXNicTFhMW9jbDJxbWw3bHNqMW92MCJ9.N1hCLnBrJjdX0JmYuA8bOw";
   static const String _mapBoxId = "mapbox.streets";
 
   MapController _mapController = MapController();
   GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
-  Size _screenSize ;
+  Size _screenSize;
+
   LatLng _lastPos;
   double _screenHeight, _screenWidth;
   bool _cardShowing = false;
-  Object _coworking;
-  LatLng _deaultPos = LatLng(49.1333333, 55.75);
+  Place _place;
+  LatLng _defaultPos = LatLng(49.1333333, 55.75);
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
-
-    _mapController.onReady.then(
-            (ready){}
-    );
+    _mapController.onReady.then((ready) {});
   }
 
   @override
@@ -45,13 +45,14 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
     _screenSize = MediaQuery.of(context).size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
-    return Scaffold(
-      key: _scaffoldState,
-      body: _buildCoWorkingMap(),
-    );
+    return _buildCoWorkingMap();
+//    return Scaffold(
+//      key: _scaffoldState,
+//      body: _buildCoWorkingMap(),
+//    );
   }
 
-  Widget _buildCoWorkingMap(){
+  Widget _buildCoWorkingMap() {
     return Container(
       child: Stack(
         children: [
@@ -61,21 +62,20 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                   mapController: _mapController,
                   options: MapOptions(
                       zoom: 3.0,
-                      onTap: (pos){
+                      onTap: (pos) {
                         setState(() {
                           _cardShowing = false;
-                          _coworking = null;
+                          _place = null;
                         });
                       },
-                      onPositionChanged: (pos){
-                        if (_cardShowing){
+                      onPositionChanged: (pos) {
+                        if (_cardShowing) {
                           setState(() {
                             _cardShowing = false;
-                            _coworking = null;
+                            _place = null;
                           });
                         }
-                      }
-                  ),
+                      }),
                   layers: [
                     TileLayerOptions(
                       urlTemplate: _mapBoxUrl,
@@ -85,41 +85,34 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                       },
                     ),
                     MarkerLayerOptions(
-                        markers: List.generate(widget._coworkings.length,
-                                (ind){
-                              var cw = widget._coworkings[ind];
-                              return Marker(
-                                  point: LatLng(_deaultPos.latitude, _deaultPos.longitude),
-//                                  point: LatLng(cw.lat, cw.lng),
-                                  builder: (ctx) =>  GestureDetector(
-                                      onTap: (){
-                                        setState(() {
-                                          _mapController.move(LatLng(_deaultPos.latitude, _deaultPos.latitude), _mapController.zoom);
+                        markers: List.generate(widget._places.length, (ind) {
+                      var place = widget._places[ind];
+                      return Marker(
+//                                  point: LatLng(_defaultPos.latitude, _defaultPos.longitude),
+                          point: place.coordinate,
+                          builder: (ctx) => GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _mapController.move(
+                                      place.coordinate, _mapController.zoom);
 //                                          _mapController.move(LatLng(cw.lat, cw.lng), _mapController.zoom);
-                                          _cardShowing = true;
-                                          _coworking = cw;
-                                        });
-                                      },
-                                      child: Container(
-                                        width: 70.0,
-                                        height: 70.0,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.fitHeight,
-                                            image: AssetImage('assets/pin_orange.png'),
-                                          ),
-                                        ),
-                                      )
-                                  )
-                              );
-                            }
-                        )..add(
-                            _buildUserMarker()
-                        )
-                    )
-                  ]
-              )
-          ),
+                                  _cardShowing = true;
+                                  _place = place;
+                                });
+                              },
+                              child: Container(
+                                width: 70.0,
+                                height: 70.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fitHeight,
+                                    image: AssetImage('assets/marker.png'),
+                                  ),
+                                ),
+                              )));
+                    })
+                          ..add(_buildUserMarker()))
+                  ])),
           Container(
               alignment: Alignment.centerRight,
               padding: EdgeInsets.only(right: 5.0),
@@ -129,7 +122,7 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                     Container(
                         width: 35.0,
                         height: 35.0,
-                        decoration:  BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.fromARGB(170, 255, 255, 255),
                         ),
@@ -139,16 +132,16 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                           color: Color.fromARGB(160, 0, 0, 0),
                           onPressed: () {
                             setState(() {
-                              _mapController.move(_mapController.center, _mapController.zoom + 0.5);
+                              _mapController.move(_mapController.center,
+                                  _mapController.zoom + 0.5);
                             });
                           },
-                        )
-                    ),
+                        )),
                     Padding(padding: EdgeInsets.only(top: 7.0)),
                     Container(
                         width: 35.0,
                         height: 35.0,
-                        decoration:  BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.fromARGB(170, 255, 255, 255),
                         ),
@@ -158,16 +151,16 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                           color: Color.fromARGB(160, 0, 0, 0),
                           onPressed: () {
                             setState(() {
-                              _mapController.move(_mapController.center, _mapController.zoom - 0.5);
+                              _mapController.move(_mapController.center,
+                                  _mapController.zoom - 0.5);
                             });
                           },
-                        )
-                    ),
+                        )),
                     Padding(padding: EdgeInsets.only(top: 7.0)),
                     Container(
                         width: 35.0,
                         height: 35.0,
-                        decoration:  BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.fromARGB(170, 255, 255, 255),
                         ),
@@ -176,29 +169,28 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                           icon: Icon(Icons.center_focus_strong),
                           color: Color.fromARGB(160, 0, 0, 0),
                           onPressed: () {
-                            if (_deaultPos != null){
+                            if (_defaultPos != null) {
                               setState(() {
-                                _lastPos = LatLng(_deaultPos.latitude, _deaultPos.longitude);
-                                _mapController.move(_lastPos, _mapController.zoom);
+                                _lastPos = LatLng(_defaultPos.latitude,
+                                    _defaultPos.longitude);
+                                _mapController.move(
+                                    _lastPos, _mapController.zoom);
                               });
                             }
                           },
-                        )
-                    ),
-                  ]
-              )
-          ),
+                        )),
+                  ])),
           _getCoWorkingCard()
         ],
       ),
     );
   }
 
-  Widget _getCoWorkingCard(){
-    if (_cardShowing){
+  Widget _getCoWorkingCard() {
+    if (_cardShowing) {
       return GestureDetector(
-          onTap: (){
-            _openDetails(_coworking);
+          onTap: () {
+            _openDetails(_place);
           },
           child: Container(
               alignment: Alignment.center,
@@ -207,83 +199,84 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                 margin: EdgeInsets.only(bottom: _screenHeight * 0.2),
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(6.0))
-                ),
+                    borderRadius: BorderRadius.all(Radius.circular(6.0))),
                 width: _screenWidth * 0.7,
                 height: _screenHeight * 0.11,
                 child: Container(
                   child: Container(
-                      margin: EdgeInsets.only(left: 7.0, right: 7.0, top: 7.0, bottom: 7.0),
+                      margin: EdgeInsets.only(
+                          left: 7.0, right: 7.0, top: 7.0, bottom: 7.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
                             width: _screenWidth * 0.45,
-                            child: Text(""  ?? "",
+                            child: Text(
+                              _place.name,
                               maxLines: 1,
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14.0
-                              ),
+                                  fontSize: 14.0),
                             ),
                           ),
-                          Container(
-                            width: _screenWidth * 0.45,
-                            child: Text(" " ?? "",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 13.0
-                              ),
-                            ),
-                          ),
-                          Text(" " != null ? " " + " - " + " " : "Closed",
+//                          Container(
+//                            width: _screenWidth * 0.45,
+//                            child: Text(_place.,
+//                              style: TextStyle(
+//                                  color: Colors.black,
+//                                  fontWeight: FontWeight.w300,
+//                                  fontSize: 13.0
+//                              ),
+//                            ),
+//                          ),
+                          Text(
+                            _place.rating.toString(),
                             style: TextStyle(
-                                color: " " != null ? Colors.green.withAlpha(180) : Colors.red.withAlpha(180),
+                                color: _place.rating >= 2.5
+                                    ? Colors.green.withAlpha(180)
+                                    : Colors.red.withAlpha(180),
                                 fontWeight: FontWeight.w300,
-                                fontSize: 14.0
-                            ),
+                                fontSize: 14.0),
                           )
                         ],
-                      )
-                  ),
+                      )),
                 ),
-              )
-          )
-      );
+              )));
     } else {
       return Container();
     }
   }
 
-  Marker _buildUserMarker(){
-    if (_lastPos != null){
+  Marker _buildUserMarker() {
+    if (_lastPos != null) {
       return Marker(
           width: 15.0,
           height: 15.0,
           point: _lastPos,
-          builder: (ctx) =>
-              Container(
-                  width: 10.0,
-                  height: 10.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blue.withAlpha(200)
-                  )
-              )
-      );
+          builder: (ctx) => Container(
+                width: 70.0,
+                height: 70.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fitHeight,
+                    image: AssetImage('assets/user_marker.png'),
+                  ),
+                ),
+              ));
     } else {
       return Marker(point: LatLng(59.1, 49.1), builder: (ctx) => Container());
     }
   }
 
-  Widget _showMessage(String message){
-    return Center(child: Text(message),);
+  Widget _showMessage(String message) {
+    return Center(
+      child: Text(message),
+    );
   }
 
-  _openDetails(Object coWorking){
+  _openDetails(Object coWorking) {
 //    SharedPreferences.getInstance().then((sp){
 //      String token = sp.getString(ConstantsManager.TOKEN_KEY);
 //      Navigator.push(
@@ -291,6 +284,5 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
 //          MaterialPageRoute(
 //              builder: (context)=>CoWorkingDetailsScreen(coWorking, token)));
 //    });
-
   }
 }

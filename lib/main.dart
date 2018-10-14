@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:latlong/latlong.dart';
 import 'package:one_two_quest/discount-page.dart';
 import 'package:one_two_quest/list_promo.dart';
+import 'package:one_two_quest/map.dart';
+import 'package:one_two_quest/place.dart';
 
 void main() => runApp(new MyApp());
 
-Map data = {
-  "places": [
+
+
+class MyApp extends StatelessWidget {
+  List places = [
     {
       "title": "Окинава",
       "coordinates": {
@@ -42,12 +47,20 @@ Map data = {
       "type": "Кофейня",
       "Rating": "4.1"
     }
-  ]
-};
-
-class MyApp extends StatelessWidget {
+  ];
   @override
   Widget build(BuildContext context) {
+    List<Place> places = [];
+    this.places.forEach((d){
+      String name = d['title'];
+      String type =d['type'];
+      double rating = double.parse(d['Rating']);
+      double lat = double.parse(d['coordinates']['lat']);
+      double lng = double.parse(d['coordinates']['lon']);
+      LatLng latLng = LatLng(lat, lng);
+      Place p = Place(name, latLng, type, rating);
+      places.add(p);
+    });
     return new MaterialApp(
       title: 'Flutter Demo',
       theme: new ThemeData(
@@ -57,17 +70,20 @@ class MyApp extends StatelessWidget {
           length: 2,
           child: Scaffold(
               appBar: AppBar(
+                backgroundColor: Colors.black,
                 bottom: TabBar(
+                  indicatorColor: Colors.deepPurple,
                   tabs: [
-                    Tab(text: data["places"][0]["title"]),
+                    Tab(text: "КАРТА"),
                     Tab(text: "МОИ КУПОНЫ"),
                   ],
                 ),
                 title: Text('OneTwoQuest'),
+                centerTitle: true,
               ),
               body: TabBarView(children: [
+                PlaceMapScreen(places),
                 ListPromo(),
-                DiscountPage()
               ])
           )
       )
