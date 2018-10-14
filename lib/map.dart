@@ -31,13 +31,15 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
   double _screenHeight, _screenWidth;
   bool _cardShowing = false;
   Place _place;
-  LatLng _defaultPos = LatLng(49.1333333, 55.75);
+  LatLng _defaultPos = LatLng(55.75, 49.1333333);
 
   @override
   void initState() {
     super.initState();
 
-    _mapController.onReady.then((ready) {});
+    _mapController.onReady.then((ready) {
+      _mapController.move(_defaultPos, 12.0);
+    });
   }
 
   @override
@@ -61,7 +63,7 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
               child: FlutterMap(
                   mapController: _mapController,
                   options: MapOptions(
-                      zoom: 3.0,
+                      zoom: 8.0,
                       onTap: (pos) {
                         setState(() {
                           _cardShowing = false;
@@ -266,7 +268,8 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                 ),
               ));
     } else {
-      return Marker(point: LatLng(59.1, 49.1), builder: (ctx) => Container());
+//      return Marker(point: LatLng(59.1, 49.1), builder: (ctx) => Container());
+      return Marker(point: _defaultPos, builder: (ctx) => Container());
     }
   }
 
