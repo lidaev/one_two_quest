@@ -182,7 +182,30 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
                           },
                         )),
                   ])),
-          _getCoWorkingCard()
+          _getCoWorkingCard(),
+          Positioned(
+            bottom: 49.0,
+            left: MediaQuery.of(context).size.width / 4,
+            child: Container(
+              width: MediaQuery.of(context).size.width /2,
+              height: 42.0,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(21.0),
+                  color: Colors.deepPurple),
+              child: InkWell(
+                child: Center(
+                  child: Text(
+                    'Оставить купон',
+                    style: Theme.of(context)
+                        .textTheme
+                        .button
+                        .copyWith(color: Colors.white),
+                  ),
+                ),
+                onTap: (){},
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -269,7 +292,18 @@ class _PlaceMapScreenState extends State<PlaceMapScreen> {
               ));
     } else {
 //      return Marker(point: LatLng(59.1, 49.1), builder: (ctx) => Container());
-      return Marker(point: _defaultPos, builder: (ctx) => Container());
+      return Marker(
+          point: _defaultPos,
+          builder: (ctx) => Container(
+                width: 70.0,
+                height: 70.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fitHeight,
+                    image: AssetImage('assets/user_marker.png'),
+                  ),
+                ),
+              ));
     }
   }
 
